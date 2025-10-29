@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Data Analyzer</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        color: #333;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .page {
+        display: none;
+      }
+
+      .page.active {
+        display: block;
+      }
+
+      /* Navbar */
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: white;
+        padding: 15px 30px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .navbar h2 {
+        color: #667eea;
+      }
+
+      /* Hero Section */
+      .hero-section {
+        text-align: center;
+        padding: 60px 20px;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      }
+
+      .title {
+        font-size: 3.5em;
+        margin-bottom: 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .subtitle {
+        font-size: 1.3em;
+        color: #666;
+        margin-bottom: 50px;
+      }
+
+      .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+        margin: 50px 0;
+      }
+
+      .feature-card {
+        padding: 30px;
+        background: #f8f9ff;
+        border-radius: 15px;
+        transition: transform 0.3s ease;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-10px);
+      }
+
+      .feature-icon {
+        font-size: 3em;
+        margin-bottom: 15px;
+      }
+
+      .feature-card h3 {
+        color: #667eea;
+        margin-bottom: 10px;
+      }
+
+      /* Buttons */
+      .get-started-btn,
+      .btn-primary,
+      .btn-success,
+      .btn-secondary {
+        padding: 18px 50px;
+        border: none;
+        border-radius: 50px;
+        font-size: 1.2em;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 500;
+      }
+
+      .get-started-btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+      }
+
+      .get-started-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+      }
+
+      .btn-primary {
+        background: #667eea;
+        color: white;
+        padding: 12px 30px;
+        border-radius: 8px;
+        font-size: 1em;
+      }
+
+      .btn-primary:hover {
+        background: #5568d3;
+        transform: translateY(-2px);
+      }
+
+      .btn-success {
+        background: #48bb78;
+        color: white;
+        padding: 12px 30px;
+        border-radius: 8px;
+        font-size: 1em;
+      }
+
+      .btn-success:hover {
+        background: #38a169;
+        transform: translateY(-2px);
+      }
+
+      .btn-secondary {
+        background: #e2e8f0;
+        color: #4a5568;
+        padding: 12px 30px;
+        border-radius: 8px;
+        font-size: 1em;
+      }
+
+      .btn-secondary:hover {
+        background: #cbd5e0;
+      }
+
+      /* Upload Section */
+      .upload-section {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        text-align: center;
+      }
+
+      .upload-box {
+        border: 3px dashed #667eea;
+        border-radius: 15px;
+        padding: 60px 40px;
+        margin: 30px 0;
+        background: #f8f9ff;
+        transition: all 0.3s ease;
+      }
+
+      .upload-box:hover {
+        border-color: #764ba2;
+        background: #f0f4ff;
+      }
+
+      .upload-icon {
+        font-size: 4em;
+        margin-bottom: 20px;
+      }
+
+      .or-text {
+        margin: 20px 0;
+        color: #999;
+      }
+
+      .file-name {
+        margin-top: 15px;
+        color: #667eea;
+        font-weight: 500;
+      }
+
+      /* Dashboard */
+      .dashboard {
+        display: grid;
+        gap: 30px;
+      }
+
+      .card {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .card h2 {
+        color: #667eea;
+        margin-bottom: 20px;
+      }
+
+      /* Form Elements */
+      .form-group {
+        margin: 20px 0;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: #4a5568;
+      }
+
+      .select-input,
+      .text-input {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 1em;
+        transition: border-color 0.3s ease;
+      }
+
+      .select-input:focus,
+      .text-input:focus {
+        outline: none;
+        border-color: #667eea;
+      }
+
+      .button-group {
+        margin: 20px 0;
+      }
+
+      /* Status Messages */
+      .status-message {
+        margin: 20px 0;
+        padding: 15px;
+        border-radius: 8px;
+        display: none;
+      }
+
+      .status-message.success {
+        background: #c6f6d5;
+        color: #22543d;
+        display: block;
+      }
+
+      .status-message.error {
+        background: #fed7d7;
+        color: #742a2a;
+        display: block;
+      }
+
+      .status-message.info {
+        background: #bee3f8;
+        color: #2c5282;
+        display: block;
+      }
+
+      /* Visuals Gallery */
+      .visuals-gallery {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+      }
+
+      .visual-item {
+        position: relative;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+        cursor: pointer;
+      }
+
+      .visual-item:hover {
+        transform: scale(1.05);
+      }
+
+      .visual-item img {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      .visual-item-name {
+        padding: 10px;
+        background: #f8f9ff;
+        text-align: center;
+        font-size: 0.9em;
+        color: #666;
+      }
+
+      .placeholder-text {
+        text-align: center;
+        color: #999;
+        padding: 40px;
+        font-style: italic;
+      }
+
+      /* Loading Overlay */
+      .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+
+      .loading-overlay.show {
+        display: flex;
+      }
+
+      .loader {
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #667eea;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .loading-overlay p {
+        color: white;
+        margin-top: 20px;
+        font-size: 1.2em;
+      }
+
+      #columnList ul {
+        text-align: left;
+        margin-left: 20px;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .title {
+          font-size: 2.5em;
+        }
+
+        .features {
+          grid-template-columns: 1fr;
+        }
+
+        .navbar {
+          flex-direction: column;
+          gap: 15px;
+        }
+
+        .visuals-gallery {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Page 1: Home/Landing Page -->
+      <div id="homePage" class="page active">
+        <div class="hero-section">
+          <h1 class="title">🤖 AI Data Analyzer</h1>
+          <p class="subtitle">
+            Transform your data into insights with AI-powered analysis
+          </p>
+
+          <div class="features">
+            <div class="feature-card">
+              <div class="feature-icon">📊</div>
+              <h3>Smart Preprocessing</h3>
+              <p>Automatic data cleaning and transformation</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🎨</div>
+              <h3>AI Visualizations</h3>
+              <p>Generate beautiful charts with AI assistance</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">💡</div>
+              <h3>Instant Insights</h3>
+              <p>Get meaningful insights from your data</p>
+            </div>
+          </div>
+
+          <button class="get-started-btn" onclick="showPage('uploadPage')">
+            Get Started
+          </button>
+        </div>
+      </div>
+
+      <!-- Page 2: Upload Page -->
+      <div id="uploadPage" class="page">
+        <div class="navbar">
+          <h2>🤖 AI Data Analyzer</h2>
+          <button onclick="showPage('homePage')" class="btn-secondary">
+            ← Back to Home
+          </button>
+        </div>
+
+        <div class="upload-section">
+          <h1>Upload Your Dataset</h1>
+          <p class="subtitle">Upload a CSV file to begin analyzing your data</p>
+
+          <div class="upload-box" id="uploadBox">
+            <div class="upload-icon">📂</div>
+            <p>Drag and drop your CSV file here</p>
+            <p class="or-text">or</p>
+            <input type="file" id="fileInput" accept=".csv" hidden />
+            <button
+              class="btn-primary"
+              onclick="document.getElementById('fileInput').click()"
+            >
+              Choose File
+            </button>
+            <p class="file-name" id="fileName"></p>
+          </div>
+
+          <div id="uploadStatus" class="status-message"></div>
+
+          <button id="uploadBtn" class="btn-success" style="display: none">
+            Upload and Continue →
+          </button>
+        </div>
+      </div>
+
+      <!-- Page 3: Dashboard Page -->
+      <div id="dashboardPage" class="page">
+        <div class="navbar">
+          <h2>🤖 AI Data Analyzer</h2>
+          <button onclick="showPage('uploadPage')" class="btn-secondary">
+            ← Upload New Dataset
+          </button>
+        </div>
+
+        <div class="dashboard">
+          <!-- Dataset Info -->
+          <div class="card">
+            <h2>📋 Dataset Information</h2>
+            <div id="datasetInfo">
+              <p><strong>File:</strong> <span id="datasetFileName">-</span></p>
+              <p><strong>Columns:</strong> <span id="columnCount">-</span></p>
+              <div id="columnList"></div>
+            </div>
+          </div>
+
+          <!-- Preprocessing Section -->
+          <div class="card">
+            <h2>🧹 Preprocessing</h2>
+            <p>Clean and prepare your data for analysis</p>
+
+            <div class="form-group">
+              <label for="preprocessTechnique">Select Technique:</label>
+              <select id="preprocessTechnique" class="select-input">
+                <option value="">-- Choose a technique --</option>
+                <option value="missing_values">Handle Missing Values</option>
+                <option value="encode">Encode Categorical Variables</option>
+                <option value="outliers">Remove Outliers</option>
+              </select>
+            </div>
+
+            <button id="applyPreprocessBtn" class="btn-primary">
+              Apply Preprocessing
+            </button>
+
+            <div id="preprocessStatus" class="status-message"></div>
+          </div>
+
+          <!-- Visualization Section -->
+          <div class="card">
+            <h2>📊 Visualization</h2>
+            <p>Generate insightful charts from your data</p>
+
+            <div class="button-group">
+              <button id="autoGenerateBtn" class="btn-success">
+                ✨ Auto Generate 5 Charts
+              </button>
+            </div>
+
+            <div class="form-group">
+              <label for="customQuery"
+                >Or ask AI to create a custom chart:</label
+              >
+              <input
+                type="text"
+                id="customQuery"
+                class="text-input"
+                placeholder="e.g., Create a scatter plot of price vs area"
+              />
+              <button
+                id="generateCustomBtn"
+                class="btn-primary"
+                style="margin-top: 10px"
+              >
+                🎨 Generate Custom Chart
+              </button>
+            </div>
+
+            <div id="visualStatus" class="status-message"></div>
+          </div>
+
+          <!-- Saved Visualizations -->
+          <div class="card">
+            <h2>🖼️ Saved Visualizations</h2>
+            <button id="refreshVisualsBtn" class="btn-secondary">
+              🔄 Refresh Gallery
+            </button>
+
+            <div id="visualsGallery" class="visuals-gallery">
+              <p class="placeholder-text">
+                No visualizations yet. Generate some charts to see them here!
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+      <div class="loader"></div>
+      <p>Processing...</p>
+    </div>
+
+    <script>
+      const API_URL = "http://127.0.0.1:8000/api";
+      let selectedFile = null;
+      let datasetInfo = null;
+
+      // Page Navigation
+      function showPage(pageId) {
+        document.querySelectorAll(".page").forEach((page) => {
+          page.classList.remove("active");
+        });
+        document.getElementById(pageId).classList.add("active");
+
+        if (pageId === "dashboardPage") {
+          displayDatasetInfo();
+          loadVisuals();
+        }
+      }
+
+      // Upload Page Logic
+      const fileInput = document.getElementById("fileInput");
+      const uploadBox = document.getElementById("uploadBox");
+      const fileName = document.getElementById("fileName");
+      const uploadBtn = document.getElementById("uploadBtn");
+      const uploadStatus = document.getElementById("uploadStatus");
+
+      fileInput.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          handleFileSelect(file);
+        }
+      });
+
+      uploadBox.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        uploadBox.style.borderColor = "#764ba2";
+        uploadBox.style.background = "#f0f4ff";
+      });
+
+      uploadBox.addEventListener("dragleave", (e) => {
+        e.preventDefault();
+        uploadBox.style.borderColor = "#667eea";
+        uploadBox.style.background = "#f8f9ff";
+      });
+
+      uploadBox.addEventListener("drop", (e) => {
+        e.preventDefault();
+        uploadBox.style.borderColor = "#667eea";
+        uploadBox.style.background = "#f8f9ff";
+
+        const file = e.dataTransfer.files[0];
+        if (file && file.name.endsWith(".csv")) {
+          handleFileSelect(file);
+        } else {
+          showStatus("uploadStatus", "Please select a CSV file", "error");
+        }
+      });
+
+      function handleFileSelect(file) {
+        selectedFile = file;
+        fileName.textContent = `Selected: ${file.name}`;
+        uploadBtn.style.display = "block";
+        showStatus("uploadStatus", "", "");
+      }
+
+      uploadBtn.addEventListener("click", async () => {
+        if (!selectedFile) {
+          showStatus("uploadStatus", "Please select a file first", "error");
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", selectedFile);
+
+        try {
+          uploadBtn.disabled = true;
+          uploadBtn.textContent = "Uploading...";
+
+          const response = await fetch(`${API_URL}/preprocess/upload`, {
+            method: "POST",
+            body: formData,
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            datasetInfo = {
+              filename: selectedFile.name,
+              path: data.path,
+              columns: data.columns,
+            };
+
+            showStatus(
+              "uploadStatus",
+              "File uploaded successfully! Redirecting...",
+              "success"
+            );
+            setTimeout(() => {
+              showPage("dashboardPage");
+              uploadBtn.disabled = false;
+              uploadBtn.textContent = "Upload and Continue →";
+            }, 1500);
+          } else {
+            throw new Error(data.message || "Upload failed");
+          }
+        } catch (error) {
+          showStatus("uploadStatus", `Error: ${error.message}`, "error");
+          uploadBtn.disabled = false;
+          uploadBtn.textContent = "Upload and Continue →";
+        }
+      });
+
+      // Dashboard Page Logic
+      function displayDatasetInfo() {
+        if (!datasetInfo) {
+          showPage("uploadPage");
+          return;
+        }
+
+        document.getElementById("datasetFileName").textContent =
+          datasetInfo.filename;
+        document.getElementById("columnCount").textContent =
+          datasetInfo.columns.length;
+
+        const columnList = document.getElementById("columnList");
+        columnList.innerHTML = "<p><strong>Column Names:</strong></p>";
+        const ul = document.createElement("ul");
+
+        datasetInfo.columns.forEach((col) => {
+          const li = document.createElement("li");
+          li.textContent = col;
+          ul.appendChild(li);
+        });
+
+        columnList.appendChild(ul);
+      }
+
+      // Preprocessing
+      document
+        .getElementById("applyPreprocessBtn")
+        .addEventListener("click", async () => {
+          const technique = document.getElementById(
+            "preprocessTechnique"
+          ).value;
+
+          if (!technique) {
+            showStatus(
+              "preprocessStatus",
+              "Please select a preprocessing technique",
+              "error"
+            );
+            return;
+          }
+
+          showLoading(true);
+
+          try {
+            const formData = new FormData();
+            formData.append("file_path", datasetInfo.path);
+            formData.append("technique", technique);
+
+            const response = await fetch(`${API_URL}/preprocess/apply`, {
+              method: "POST",
+              body: formData,
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+              showStatus("preprocessStatus", data.message, "success");
+            } else {
+              throw new Error(data.message || "Preprocessing failed");
+            }
+          } catch (error) {
+            showStatus("preprocessStatus", `Error: ${error.message}`, "error");
+          } finally {
+            showLoading(false);
+          }
+        });
+
+      // Auto generate visualizations
+      document
+        .getElementById("autoGenerateBtn")
+        .addEventListener("click", async () => {
+          showLoading(true);
+          showStatus(
+            "visualStatus",
+            "Generating 5 charts... This may take a moment.",
+            "info"
+          );
+
+          try {
+            const formData = new FormData();
+            formData.append("file_path", datasetInfo.path);
+
+            const response = await fetch(`${API_URL}/visualize/auto`, {
+              method: "POST",
+              body: formData,
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+              showStatus(
+                "visualStatus",
+                data.message || "Charts generated successfully!",
+                "success"
+              );
+              setTimeout(() => loadVisuals(), 1000);
+            } else {
+              throw new Error(data.message || "Visualization failed");
+            }
+          } catch (error) {
+            showStatus("visualStatus", `Error: ${error.message}`, "error");
+          } finally {
+            showLoading(false);
+          }
+        });
+
+      // Generate custom chart
+      document
+        .getElementById("generateCustomBtn")
+        .addEventListener("click", async () => {
+          const query = document.getElementById("customQuery").value.trim();
+
+          if (!query) {
+            showStatus(
+              "visualStatus",
+              "Please enter a visualization request",
+              "error"
+            );
+            return;
+          }
+
+          showLoading(true);
+          showStatus("visualStatus", "Generating your custom chart...", "info");
+
+          try {
+            const formData = new FormData();
+            formData.append("file_path", datasetInfo.path);
+            formData.append("query", query);
+
+            const response = await fetch(`${API_URL}/visualize/chat`, {
+              method: "POST",
+              body: formData,
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+              showStatus(
+                "visualStatus",
+                "Chart generated successfully!",
+                "success"
+              );
+              document.getElementById("customQuery").value = "";
+              setTimeout(() => loadVisuals(), 1000);
+            } else {
+              throw new Error(data.error || "Visualization failed");
+            }
+          } catch (error) {
+            showStatus("visualStatus", `Error: ${error.message}`, "error");
+          } finally {
+            showLoading(false);
+          }
+        });
+
+      // Refresh visuals button
+      document
+        .getElementById("refreshVisualsBtn")
+        .addEventListener("click", () => {
+          loadVisuals();
+        });
+
+      // Load and display saved visualizations
+      async function loadVisuals() {
+        try {
+          const response = await fetch(`${API_URL}/visuals/list`);
+          const data = await response.json();
+
+          const gallery = document.getElementById("visualsGallery");
+
+          if (data.files && data.files.length > 0) {
+            gallery.innerHTML = "";
+
+            data.files.forEach((file) => {
+              const visualItem = document.createElement("div");
+              visualItem.className = "visual-item";
+
+              const img = document.createElement("img");
+              img.src = `http://127.0.0.1:8000/visuals/${file}`;
+              img.alt = file;
+
+              const nameDiv = document.createElement("div");
+              nameDiv.className = "visual-item-name";
+              nameDiv.textContent = file;
+
+              visualItem.appendChild(img);
+              visualItem.appendChild(nameDiv);
+
+              visualItem.addEventListener("click", () => {
+                window.open(img.src, "_blank");
+              });
+
+              gallery.appendChild(visualItem);
+            });
+          } else {
+            gallery.innerHTML =
+              '<p class="placeholder-text">No visualizations yet. Generate some charts to see them here!</p>';
+          }
+        } catch (error) {
+          console.error("Error loading visuals:", error);
+        }
+      }
+
+      // Utility functions
+      function showStatus(elementId, message, type) {
+        const statusEl = document.getElementById(elementId);
+        statusEl.textContent = message;
+        statusEl.className = `status-message ${type}`;
+      }
+
+      function showLoading(show) {
+        const overlay = document.getElementById("loadingOverlay");
+        if (show) {
+          overlay.classList.add("show");
+        } else {
+          overlay.classList.remove("show");
+        }
+      }
+    </script>
+  </body>
+</html>
